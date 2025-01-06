@@ -1,34 +1,110 @@
-# sudofox/gitscanner
+<div align="center">
+  <a href="#">
+    <img src="assets/banner.png" alt="Logo">
+  </a>
+</div>
 
-Tools/utilities to clone every repository from a GitHub user or organization, and all the members of organization; and to scan over the entire commit history to find interesting things
+# RekuNote/GitLabScanner
 
-This will take up a lot of disk space!
+Tools/utilities to clone every repository from a GitLab user or group and all the members of group; and to scan over the entire commit history to find interesting things
 
-Requires installation of jq utility to parse GitHub API responses
+> Requires installation of the [`jq`](https://github.com/jqlang/jq) utility to parse GitLab API responses.
 
-### clone_organization_users.sh
+## Table of Contents
+- [Tools](#tools)
+  - [clone_group_users.sh](#clone_group_userssh)
+  - [clone_user.sh](#clone_usersh)
+  - [search.sh](#searchsh)
+  - [exclude.txt](#excludetxt)
+- [Getting your GitLab personal access key](#getting-your-gitlab-personal-access-key)
+- [Requirements](#requirements)
+- [Updated Directory Structure](#updated-directory-structure)
+- [Notes](#notes)
+- [Credits](#credits)
 
-`./clone_organization_users.sh organizationname`
+## Tools
 
-Iterate through an organization's users and clone all their stuff
+### `clone_group_users.sh`
 
-### clone_user.sh
+Iterate through a GitLab group's users and clone all their repositories.
 
-`./clone_user.sh username`
+```bash
+./clone_group_users.sh groupname
+```
 
-Clone all repos from a user
+### `clone_user.sh`
 
-### search.sh
+Clone all repositories from a GitLab user.
 
-Takes regex, search through all repos and all their commit history for interesting strings that may be or may have been part of the repo
+```bash
+./clone_user.sh username
+```
 
-`./search.sh '[0-9]{1,}regex'`
+### `search.sh`
 
-### exclude.txt
+Search through all cloned repositories and their commit histories for a given string or regex.
 
-Exclude repositories that are just forks or are too massive to manage/search/store
+```bash
+./search.sh '[regex]'
+```
 
-One per line. Format:
+Example:
 
-`username/reponame`
+```bash
+./search.sh 'flipnote}'
+```
 
+(This searches for any numeric strings in all repositories.)
+
+### `exclude.txt`
+
+Exclude specific repositories from being cloned. Add repositories to this file if they are forks, too large to store or search, or not relevant.
+
+#### Format:
+
+One repository per line, in the format:
+
+```
+UserOrGroupName/RepoName
+```
+
+For example:
+
+```
+exampleuser/huge-repo
+examplegroup/irrelevant-fork
+```
+
+## Getting your GitLab personal access key
+
+**Note:** Before using these tools, you need to set your `GITLAB_TOKEN` environment variable.  
+1. Go to [GitLab Personal Access Tokens](https://gitlab.com/-/user_settings/personal_access_tokens).  
+2. Click the `Add new token` button.  
+3. Give it a name (e.g., "GitLabScanner"), select the necessary scopes (e.g., `api`), and generate the token.  
+4. Copy the token and set it in your environment. For example:
+   ```bash
+   export GITLAB_TOKEN=your_generated_token
+   ```
+5. Optionally, add the export command to your shell's configuration file (e.g., `.bashrc` or `.zshrc`) for persistence.
+
+## Requirements
+
+- `jq` for parsing GitLab API responses.
+- `git` for cloning and interacting with repositories.
+
+## Updated Directory Structure
+
+Repositories are stored differently to gitscanner:
+```
+├── repositories
+│   └── git@gitlab.com
+│       └── Username
+│           └── RepoName
+│               ├── <repository files>
+```
+
+## Notes
+
+- These tools are optimised for GitLab but can be adapted for similar APIs.
+- Ensure you have sufficient disk space before running these tools.
+- This repository is a fork of [gitscanner](https://github.com/sudofox/gitscanner/) by [sudofox](https://github.com/sudofox/).
